@@ -6,6 +6,7 @@
 typedef struct App {
     SDL_Renderer *renderer;
     SDL_Window *window;
+    bool keyboard[MAX_KEYBOARD_KEYS];
 } App;
 
 typedef struct Entity {

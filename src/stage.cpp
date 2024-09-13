@@ -21,7 +21,17 @@ namespace StageUtil {
     }
 
     static void updatePlayer() {
-        // do nothing for now
+        if (stage.player != NULL) {
+            stage.player->dx = 0;
+
+            if (app.keyboard[SDL_SCANCODE_LEFT] && (stage.player->x - PLAYER_SPEED > 0))
+                {stage.player->dx = -PLAYER_SPEED;}
+
+            if (app.keyboard[SDL_SCANCODE_RIGHT] && (stage.player->x + stage.player->w + PLAYER_SPEED < SCREEN_WIDTH))
+                {stage.player->dx = PLAYER_SPEED;}
+
+            stage.player->x += stage.player->dx;
+        }
     }
 
     static void drawPlayer() {
