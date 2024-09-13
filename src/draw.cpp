@@ -15,7 +15,6 @@ namespace Draw {
     SDL_Texture *loadTexture(const char *filename) {
         SDL_Texture *texture = NULL;
     
-        // Why are we logging a message??? for debugging???
         SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, 
                         SDL_LOG_PRIORITY_INFO, 
                         "Loading %s", 
