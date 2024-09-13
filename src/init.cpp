@@ -11,7 +11,7 @@ namespace Init {
         }
 
         // initialise app with window and renderer
-        app.window = SDL_CreateWindow("Snow Invaders", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, 0);
+        app.window = SDL_CreateWindow("Space Invaders", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, 0);
         if (app.window == NULL) {
             printf("Failed to create window: %s\n", SDL_GetError());
             exit(1);
@@ -22,6 +22,9 @@ namespace Init {
             printf("Failed to create renderer: %s\n", SDL_GetError());
             exit(1);
         }
+
+        // initialise images
+        IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG);
     }
 
     void cleanup() {
