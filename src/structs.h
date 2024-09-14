@@ -25,4 +25,5 @@ typedef struct Entity {
 
 typedef struct World {
     Entity *player;
+    Entity bulletHead, *bulletTail;
 } World;
