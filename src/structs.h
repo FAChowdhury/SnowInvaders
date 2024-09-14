@@ -26,4 +26,7 @@ typedef struct Entity {
 typedef struct World {
     Entity *player;
     Entity bulletHead, *bulletTail;
+    Entity *alien01s[2][NUM_ALIENS_PER_ROW];
+    Entity *alien02s[2][NUM_ALIENS_PER_ROW];
+    Entity *alien03s[NUM_ALIENS_PER_ROW];
 } World;

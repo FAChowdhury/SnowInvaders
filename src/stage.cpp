@@ -3,9 +3,15 @@
 extern App app;
 extern World stage;
 
+int alienStartXPos[NUM_ALIENS_PER_ROW];
+int alienStartYPos[NUM_ALIENS_PER_COL];
+
 namespace StageTextures {
     static SDL_Texture *playerTexture;
     static SDL_Texture *playerBulletTexture;
+    static SDL_Texture *alien01Texture;
+    static SDL_Texture *alien02Texture;
+    static SDL_Texture *alien03Texture;
 }
 
 namespace StageUtil {
@@ -44,6 +50,66 @@ namespace StageUtil {
     }
 
     static void initBullets() {stage.bulletTail = &stage.bulletHead;}
+
+    static void initAliens() {
+        // set up starting positions
+        int startPosX = (SCREEN_WIDTH / 2) - (SPACE_BETWEEN_ALIENS_X * (NUM_ALIENS_PER_ROW / 2));
+        for (int i = 0; i < NUM_ALIENS_PER_ROW; ++i) {
+            alienStartXPos[i] = startPosX;
+            startPosX += SPACE_BETWEEN_ALIENS_X;
+        }
+
+        int startPosY = MAX_ALIEN_Y_POS;
+        for (int i = 0; i < NUM_ALIENS_PER_COL; ++i) {
+            alienStartYPos[i] = startPosY;
+            startPosY += SPACE_BETWEEN_ALIENS_Y;
+        }
+        
+        // allocate memory for every alien and initialise values
+        // alien01s
+        for (int row = 0; row < 2; ++row) {
+            for (int col = 0; col < NUM_ALIENS_PER_ROW; ++col) {
+                stage.alien01s[row][col] = (Entity *)malloc(sizeof(Entity));
+                memset(stage.alien01s[row][col], 0, sizeof(Entity));
+
+                stage.alien01s[row][col]->texture = StageTextures::alien01Texture;
+                SDL_QueryTexture(stage.alien01s[row][col]->texture, NULL, NULL, &stage.alien01s[row][col]->w, &stage.alien01s[row][col]->h);
+                stage.alien01s[row][col]->x = alienStartXPos[col] - (stage.alien01s[row][col]->w / 2);
+                stage.alien01s[row][col]->y = alienStartYPos[row + 3]; // 3 and 4
+                stage.alien01s[row][col]->health = 1;
+                stage.alien01s[row][col]->side = SIDE::ALIEN;
+                // stage.alien01s[row][col]->reload = PLAYER_FIRE_RATE; TODO LATER
+            }
+        }
+        // alien02s
+        for (int row = 0; row < 2; ++row) {
+            for (int col = 0; col < NUM_ALIENS_PER_ROW; ++col) {
+                stage.alien02s[row][col] = (Entity *)malloc(sizeof(Entity));
+                memset(stage.alien02s[row][col], 0, sizeof(Entity));
+
+                stage.alien02s[row][col]->texture = StageTextures::alien02Texture;
+                SDL_QueryTexture(stage.alien02s[row][col]->texture, NULL, NULL, &stage.alien02s[row][col]->w, &stage.alien02s[row][col]->h);
+                stage.alien02s[row][col]->x = alienStartXPos[col] - (stage.alien02s[row][col]->w / 2);
+                stage.alien02s[row][col]->y = alienStartYPos[row + 1]; // 1 and 2
+                stage.alien02s[row][col]->health = 1;
+                stage.alien02s[row][col]->side = SIDE::ALIEN;
+                // stage.alien02s[row][col]->reload = PLAYER_FIRE_RATE; TODO LATER
+            }
+        }
+        // alien03s
+        for (int i = 0; i < NUM_ALIENS_PER_ROW; ++i) {
+            stage.alien03s[i] = (Entity *)malloc(sizeof(Entity));
+            memset(stage.alien03s[i], 0, sizeof(Entity));
+
+            stage.alien03s[i]->texture = StageTextures::alien03Texture;
+            SDL_QueryTexture(stage.alien03s[i]->texture, NULL, NULL, &stage.alien03s[i]->w, &stage.alien03s[i]->h);
+            stage.alien03s[i]->x = alienStartXPos[i] - (stage.alien03s[i]->w / 2);
+            stage.alien03s[i]->y = alienStartYPos[0]; // 0
+            stage.alien03s[i]->health = 1;
+            stage.alien03s[i]->side = SIDE::ALIEN;
+            // stage.alien03s[i]->reload = PLAYER_FIRE_RATE; TODO LATER
+        }
+    }
 
     static void updatePlayer() {
         if (stage.player != NULL) {
@@ -95,6 +161,27 @@ namespace StageUtil {
             Draw::drawToWindow(curr->texture, curr->x, curr->y);
         }
     }
+
+    static void updateAliens() {}
+
+    static void drawAliens() {
+         // alien01s
+        for (int row = 0; row < 2; ++row) {
+            for (int col = 0; col < NUM_ALIENS_PER_ROW; ++col) {
+                Draw::drawToWindow(stage.alien01s[row][col]->texture, stage.alien01s[row][col]->x, stage.alien01s[row][col]->y);
+            }
+        }
+        // alien02s
+        for (int row = 0; row < 2; ++row) {
+            for (int col = 0; col < NUM_ALIENS_PER_ROW; ++col) {
+                Draw::drawToWindow(stage.alien02s[row][col]->texture, stage.alien02s[row][col]->x, stage.alien02s[row][col]->y);
+            }
+        }
+        // alien03s
+        for (int i = 0; i < NUM_ALIENS_PER_ROW; ++i) {
+            Draw::drawToWindow(stage.alien03s[i]->texture, stage.alien03s[i]->x, stage.alien03s[i]->y);
+        }
+    }
 }
 
 namespace Stage {
@@ -105,19 +192,25 @@ namespace Stage {
         // load all textures
         StageTextures::playerTexture = Draw::loadTexture("../gfx/Player.png");
         StageTextures::playerBulletTexture = Draw::loadTexture("../gfx/PlayerBullet.png");
+        StageTextures::alien01Texture = Draw::loadTexture("../gfx/Alien01.png");
+        StageTextures::alien02Texture = Draw::loadTexture("../gfx/Alien02.png");
+        StageTextures::alien03Texture = Draw::loadTexture("../gfx/Alien03.png");
 
         // initialise stage objects
         StageUtil::initPlayer();
         StageUtil::initBullets();
+        StageUtil::initAliens();
     }
 
     void updateStage() {
         StageUtil::updatePlayer();
+        StageUtil::updateAliens();
         StageUtil::updateBullets();
     }
 
     void drawStage() {
         StageUtil::drawPlayer();
+        StageUtil::drawAliens();
         StageUtil::drawBullets();
     }
 }
