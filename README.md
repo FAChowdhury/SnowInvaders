@@ -47,7 +47,11 @@ make
 
 <h1>Current Game State</h1>
 
-https://github.com/user-attachments/assets/4336ca5a-8d14-410b-9a5a-10101a45e40b
+
+
+https://github.com/user-attachments/assets/7fc98f6c-8292-4403-9db4-a6f89d0b5430
+<p>This video is sped up by x3.5.</p>
+
 
 <h2>Completed Tasks</h2>
 <ul>
