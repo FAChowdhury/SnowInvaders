@@ -45,3 +45,27 @@ make
 
 <p>A window should now open with the game.</p>
 
+<h1>Current Game State</h1>
+
+https://github.com/user-attachments/assets/4336ca5a-8d14-410b-9a5a-10101a45e40b
+
+<h2>Completed Tasks</h2>
+<ul>
+  <li>Rendering and moving player</li>
+  <li>Allowing player to shoot</li>
+  <li>Rendering and moving aliens/invaders</li>
+  <li>Allowing aliens/invaders to be destroyed by player's bullets</li>
+</ul>
+
+<h2>Tasks TODO</h2>
+<p>These are not in any particular order. They are also subject to change and more features may be added.</p>
+<ul>
+  <li>Allow aliens/invaders to shoot and destroy the player</li>
+  <li>Render barriers and allow them to block bullets</li>
+  <li>Make barriers crack when colliding with bullets</li>
+  <li>Add HUD to track score and lives</li>
+  <li>Reset game after player dies</li>
+  <li>Reset aliens after they all die</li>
+  <li>Main menus</li>
+  <li>Whatever else I feel like adding in the moment... These will be here when I decide to add them to the game.</li>
+</ul>
