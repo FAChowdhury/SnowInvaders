@@ -13,19 +13,27 @@
 <h1>How to run the game</h1>
 <bold>Run the following command in the terminal in the root directory to make the build file</bold>
 ```
+
 cmake -B build
+
 ```
 <bold>Using the terminal, go into the build folder using the following command:</bold>
 ```
+
 cd build
+
 ```
 <bold>Once you are in the build folder, enter the following command to build the program:</bold>
 ```
+
 make
+
 ```
 <bold>After the program finishes building, to run the game enter this final command in the terminal:</bold>
 ```
+
 ./SnowInvaders
+
 ```
 <p>A window should now open with the game.</p>
 
