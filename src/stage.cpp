@@ -15,6 +15,48 @@ namespace StageTextures {
 }
 
 namespace StageUtil {
+    static bool isBulletHittingAlien(Entity *bullet) {
+        Rect bulletHitBox = {.x = bullet->x, .y = bullet->y, .w = bullet->w, .h = bullet->h};
+        // alien01s
+        for (int row = 0; row < 2; ++row) {
+            for (int col = 0; col < NUM_ALIENS_PER_ROW; ++col) {
+                if (stage.alien01s[row][col] != NULL) {
+                    Rect alienHitBox = {.x = stage.alien01s[row][col]->x, .y = stage.alien01s[row][col]->y, .w = stage.alien01s[row][col]->w, .h = stage.alien01s[row][col]->h};
+                    if (bullet->side != stage.alien01s[row][col]->side && Util::collision(&bulletHitBox, &alienHitBox)) {
+                        stage.alien01s[row][col]->health = 0;
+                        return true;
+                    }
+                }
+            }
+        }
+        // alien02s
+        for (int row = 0; row < 2; ++row) {
+            for (int col = 0; col < NUM_ALIENS_PER_ROW; ++col) {
+                if (stage.alien02s[row][col] != NULL) {
+                    Rect alienHitBox = {.x = stage.alien02s[row][col]->x, .y = stage.alien02s[row][col]->y, .w = stage.alien02s[row][col]->w, .h = stage.alien02s[row][col]->h};
+                    if (bullet->side != stage.alien02s[row][col]->side && Util::collision(&bulletHitBox, &alienHitBox)) {
+                        stage.alien02s[row][col]->health = 0;
+                        return true;
+                    }
+                }
+            }
+        }
+        // alien03s
+        for (int i = 0; i < NUM_ALIENS_PER_ROW; ++i) {
+            if (stage.alien03s[i] != NULL) {
+                Rect alienHitBox = {.x = stage.alien03s[i]->x, .y = stage.alien03s[i]->y, .w = stage.alien03s[i]->w, .h = stage.alien03s[i]->h};
+                if (bullet->side != stage.alien03s[i]->side && Util::collision(&bulletHitBox, &alienHitBox)) {
+                    stage.alien03s[i]->health = 0;
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    static bool isBulletHittingPlayer(Entity *bullet) {return false;}
+
     static void fireBullet() {
         // make the bullet entity
         Entity *bullet = (Entity *)malloc(sizeof(Entity));
@@ -143,8 +185,8 @@ namespace StageUtil {
             curr->x += curr->dx;
             curr->y += curr->dy;
 
-            // if bullet is outside of window, free it
-            if (curr->x > SCREEN_WIDTH || curr->y > SCREEN_HEIGHT || curr->x < -curr->w || curr->y < -curr->h) {
+            // if bullet is outside of window or collides with something, free it
+            if (isBulletHittingAlien(curr) || isBulletHittingPlayer(curr) || curr->x > SCREEN_WIDTH || curr->y > SCREEN_HEIGHT || curr->x < -curr->w || curr->y < -curr->h) {
                 if (curr == stage.bulletTail) {stage.bulletTail = prev;}
 
                 prev->next = curr->next;
@@ -162,24 +204,51 @@ namespace StageUtil {
         }
     }
 
-    static void updateAliens() {}
-
-    static void drawAliens() {
-         // alien01s
+    static void updateAliens() {
+        // free alien if health is 0
+        // alien01s
         for (int row = 0; row < 2; ++row) {
             for (int col = 0; col < NUM_ALIENS_PER_ROW; ++col) {
-                Draw::drawToWindow(stage.alien01s[row][col]->texture, stage.alien01s[row][col]->x, stage.alien01s[row][col]->y);
+                if (stage.alien01s[row][col] != NULL && stage.alien01s[row][col]->health == 0) {
+                    free(stage.alien01s[row][col]);
+                    stage.alien01s[row][col] = NULL;
+                }
             }
         }
         // alien02s
         for (int row = 0; row < 2; ++row) {
             for (int col = 0; col < NUM_ALIENS_PER_ROW; ++col) {
-                Draw::drawToWindow(stage.alien02s[row][col]->texture, stage.alien02s[row][col]->x, stage.alien02s[row][col]->y);
+                if (stage.alien02s[row][col] != NULL && stage.alien02s[row][col]->health == 0) {
+                    free(stage.alien02s[row][col]);
+                    stage.alien02s[row][col] = NULL;
+                }
             }
         }
         // alien03s
         for (int i = 0; i < NUM_ALIENS_PER_ROW; ++i) {
-            Draw::drawToWindow(stage.alien03s[i]->texture, stage.alien03s[i]->x, stage.alien03s[i]->y);
+            if (stage.alien03s[i] != NULL && stage.alien03s[i]->health == 0) {
+                free(stage.alien03s[i]);
+                stage.alien03s[i] = NULL;
+            }
+        }
+    }
+
+    static void drawAliens() {
+        // alien01s
+        for (int row = 0; row < 2; ++row) {
+            for (int col = 0; col < NUM_ALIENS_PER_ROW; ++col) {
+                if (stage.alien01s[row][col] != NULL) {Draw::drawToWindow(stage.alien01s[row][col]->texture, stage.alien01s[row][col]->x, stage.alien01s[row][col]->y);}
+            }
+        }
+        // alien02s
+        for (int row = 0; row < 2; ++row) {
+            for (int col = 0; col < NUM_ALIENS_PER_ROW; ++col) {
+                if (stage.alien02s[row][col] != NULL) {Draw::drawToWindow(stage.alien02s[row][col]->texture, stage.alien02s[row][col]->x, stage.alien02s[row][col]->y);}
+            }
+        }
+        // alien03s
+        for (int i = 0; i < NUM_ALIENS_PER_ROW; ++i) {
+            if (stage.alien03s[i] != NULL) {Draw::drawToWindow(stage.alien03s[i]->texture, stage.alien03s[i]->x, stage.alien03s[i]->y);}
         }
     }
 }

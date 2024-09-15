@@ -30,3 +30,10 @@ typedef struct World {
     Entity *alien02s[2][NUM_ALIENS_PER_ROW];
     Entity *alien03s[NUM_ALIENS_PER_ROW];
 } World;
+
+typedef struct Rect {
+    float x;
+    float y;
+    int w;
+    int h;
+} Rect;

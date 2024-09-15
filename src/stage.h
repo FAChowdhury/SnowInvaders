@@ -4,6 +4,7 @@
 #include "structs.h"
 #include "draw.h"
 #include "defs.h"
+#include "util.h"
 
 namespace Stage {
     void initStage();
