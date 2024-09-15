@@ -5,6 +5,10 @@ extern World stage;
 
 int alienStartXPos[NUM_ALIENS_PER_ROW];
 int alienStartYPos[NUM_ALIENS_PER_COL];
+int alienJumpCooldown;
+int alienDirection;
+float leftMostAlienX;
+float rightMostAlienX;
 
 namespace StageTextures {
     static SDL_Texture *playerTexture;
@@ -94,6 +98,12 @@ namespace StageUtil {
     static void initBullets() {stage.bulletTail = &stage.bulletHead;}
 
     static void initAliens() {
+        // set alien jump cooldown
+        alienJumpCooldown = ALIEN_JUMP_COOLDOWN;
+
+        // set alien movement direction
+        alienDirection = -1; // left
+
         // set up starting positions
         int startPosX = (SCREEN_WIDTH / 2) - (SPACE_BETWEEN_ALIENS_X * (NUM_ALIENS_PER_ROW / 2));
         for (int i = 0; i < NUM_ALIENS_PER_ROW; ++i) {
@@ -158,10 +168,10 @@ namespace StageUtil {
             // player movement
             stage.player->dx = 0;
 
-            if (app.keyboard[SDL_SCANCODE_LEFT] && (stage.player->x - PLAYER_SPEED > 0))
+            if (app.keyboard[SDL_SCANCODE_LEFT] && (stage.player->x - PLAYER_SPEED > WIDTH_PADDING))
                 {stage.player->dx = -PLAYER_SPEED;}
 
-            if (app.keyboard[SDL_SCANCODE_RIGHT] && (stage.player->x + stage.player->w + PLAYER_SPEED < SCREEN_WIDTH))
+            if (app.keyboard[SDL_SCANCODE_RIGHT] && (stage.player->x + stage.player->w + PLAYER_SPEED < SCREEN_WIDTH - WIDTH_PADDING))
                 {stage.player->dx = PLAYER_SPEED;}
 
             stage.player->x += stage.player->dx;
@@ -205,32 +215,124 @@ namespace StageUtil {
     }
 
     static void updateAliens() {
-        // free alien if health is 0
+        --alienJumpCooldown;
+        // compute left-most and right-most alien columns per frame {range from 0 to and not including NUM_ALIENS_PER_ROW}
+        // find left-most alien
+        bool found = false;
+        for (int col = 0; col < NUM_ALIENS_PER_ROW; ++col) {
+            for (int row = 0; row < 2; ++row) {
+                if (stage.alien01s[row][col]) {
+                    leftMostAlienX = stage.alien01s[row][col]->x;
+                    found = true;
+                    break;
+                }
+            }
+            if (found) {break;}
+            for (int row = 0; row < 2; ++row) {
+                if (stage.alien02s[row][col]) {
+                    leftMostAlienX = stage.alien02s[row][col]->x;
+                    found = true;
+                    break;
+                }
+            }
+            if (found) {break;}
+            if (stage.alien03s[col]) {
+                leftMostAlienX = stage.alien03s[col]->x;
+                break;
+            }
+        }
+
+        // find right-most alien
+        found = false;
+        for (int col = NUM_ALIENS_PER_ROW - 1; col >= 0; --col) {
+            for (int row = 0; row < 2; ++row) {
+                if (stage.alien01s[row][col]) {
+                    rightMostAlienX = stage.alien01s[row][col]->x + stage.alien01s[row][col]->w;
+                    found = true;
+                    break;
+                }
+            }
+            if (found) {break;}
+            for (int row = 0; row < 2; ++row) {
+                if (stage.alien02s[row][col]) {
+                    rightMostAlienX = stage.alien02s[row][col]->x + stage.alien02s[row][col]->w;
+                    found = true;
+                    break;
+                }
+            }
+            if (found) {break;}
+            if (stage.alien03s[col]) {
+                rightMostAlienX = stage.alien03s[col]->x + stage.alien03s[col]->w;
+                break;
+            }
+        }
+
+        // if alien does not die:
+        // if cooldown is 0: move the alien
+        // conditions for moving alien:
+        // if left-most goes out of bounds after move, jump y direction, set direction to opposite
+        // if right-most goes out of bounds after move, jump y direction, set direction to opposite
+        bool reverseAlienDirection = false;
         // alien01s
         for (int row = 0; row < 2; ++row) {
             for (int col = 0; col < NUM_ALIENS_PER_ROW; ++col) {
-                if (stage.alien01s[row][col] != NULL && stage.alien01s[row][col]->health == 0) {
-                    free(stage.alien01s[row][col]);
-                    stage.alien01s[row][col] = NULL;
+                if (stage.alien01s[row][col]) {
+                    if (stage.alien01s[row][col]->health == 0) { // dies
+                        free(stage.alien01s[row][col]);
+                        stage.alien01s[row][col] = NULL;
+                    } else { // does not die
+                        if (alienJumpCooldown == 0) {
+                            if (leftMostAlienX + ALIEN_JUMP_DISTANCE_X * alienDirection < WIDTH_PADDING || rightMostAlienX + ALIEN_JUMP_DISTANCE_X * alienDirection > SCREEN_WIDTH - WIDTH_PADDING) {
+                                stage.alien01s[row][col]->y += ALIEN_JUMP_DISTANCE_Y;
+                                reverseAlienDirection = true;
+                            } else {
+                                stage.alien01s[row][col]->x += ALIEN_JUMP_DISTANCE_X * alienDirection;
+                            }
+                        }
+                    }
                 }
             }
         }
         // alien02s
         for (int row = 0; row < 2; ++row) {
             for (int col = 0; col < NUM_ALIENS_PER_ROW; ++col) {
-                if (stage.alien02s[row][col] != NULL && stage.alien02s[row][col]->health == 0) {
-                    free(stage.alien02s[row][col]);
-                    stage.alien02s[row][col] = NULL;
+                if (stage.alien02s[row][col] != NULL) {
+                    if (stage.alien02s[row][col]->health == 0) {
+                        free(stage.alien02s[row][col]);
+                        stage.alien02s[row][col] = NULL;
+                    } else {
+                        if (alienJumpCooldown == 0) {
+                            if (leftMostAlienX + ALIEN_JUMP_DISTANCE_X * alienDirection < WIDTH_PADDING || rightMostAlienX + ALIEN_JUMP_DISTANCE_X * alienDirection > SCREEN_WIDTH - WIDTH_PADDING) {
+                                stage.alien02s[row][col]->y += ALIEN_JUMP_DISTANCE_Y;
+                                reverseAlienDirection = true;
+                            } else {
+                                stage.alien02s[row][col]->x += ALIEN_JUMP_DISTANCE_X * alienDirection;
+                            }
+                        }
+                    }
                 }
             }
         }
         // alien03s
         for (int i = 0; i < NUM_ALIENS_PER_ROW; ++i) {
-            if (stage.alien03s[i] != NULL && stage.alien03s[i]->health == 0) {
-                free(stage.alien03s[i]);
-                stage.alien03s[i] = NULL;
+            if (stage.alien03s[i] != NULL) {
+                if (stage.alien03s[i]->health == 0) {
+                    free(stage.alien03s[i]);
+                    stage.alien03s[i] = NULL;
+                } else {
+                    if (alienJumpCooldown == 0) {
+                        if (leftMostAlienX + ALIEN_JUMP_DISTANCE_X * alienDirection < WIDTH_PADDING || rightMostAlienX + ALIEN_JUMP_DISTANCE_X * alienDirection > SCREEN_WIDTH - WIDTH_PADDING) {
+                            stage.alien03s[i]->y += ALIEN_JUMP_DISTANCE_Y;
+                            reverseAlienDirection = true;
+                        } else {
+                            stage.alien03s[i]->x += ALIEN_JUMP_DISTANCE_X * alienDirection;
+                        }
+                    }
+                }
             }
         }
+        if (reverseAlienDirection) {alienDirection *= -1;}
+        if (alienJumpCooldown == 0) {alienJumpCooldown = ALIEN_JUMP_COOLDOWN;}
     }
 
     static void drawAliens() {
