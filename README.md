@@ -67,5 +67,7 @@ https://github.com/user-attachments/assets/4336ca5a-8d14-410b-9a5a-10101a45e40b
   <li>Reset game after player dies</li>
   <li>Reset aliens after they all die</li>
   <li>Main menus</li>
+  <li>Animations</li>
+  <li>Sound</li>
   <li>Whatever else I feel like adding in the moment... These will be here when I decide to add them to the game.</li>
 </ul>
