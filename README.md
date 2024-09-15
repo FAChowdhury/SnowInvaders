@@ -9,6 +9,7 @@
   <li>SDL Image</li>
   <li>SDL Mixer</li>
   <li>SDL TTF</li>
+  <li>SDL Net</li>
 </ul>
 <h1>How to run the game</h1>
 <bold>Run the following command in the terminal in the root directory to make the build file</bold>
