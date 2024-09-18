@@ -1,5 +1,5 @@
 # SnowInvaders*
-![image](https://github.com/user-attachments/assets/431b996d-3c8d-4bf0-8bb9-a5a6f267bef6)
+![image](https://github.com/user-attachments/assets/626187ba-1c67-4d4b-a9ee-ca55f56fdb1c)
 
 <p>A Space Invaders clone made with C and SDL, currently a WIP.</p>
 <p>The game is primarily made in C with some C++ features such as namespaces for easier readibility.</p>
