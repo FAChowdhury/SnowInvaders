@@ -1,4 +1,6 @@
 # SnowInvaders*
+![image](https://github.com/user-attachments/assets/431b996d-3c8d-4bf0-8bb9-a5a6f267bef6)
+
 <p>A Space Invaders clone made with C and SDL, currently a WIP.</p>
 <p>The game is primarily made in C with some C++ features such as namespaces for easier readibility.</p>
 <p>*The game currently has an art style similar to the original space invaders but the art will be changed to allow the player to play as jinx against the invasion of the poros. This is so I am able to focus on the game logic first.</p>
