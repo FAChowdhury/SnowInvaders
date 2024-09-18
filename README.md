@@ -63,7 +63,7 @@ https://github.com/user-attachments/assets/7fc98f6c-8292-4403-9db4-a6f89d0b5430
   <li>Rendering and moving aliens/invaders</li>
   <li>Allowing aliens/invaders to be destroyed by player's bullets</li>
 </ul>
-
+<p>Currently working on barrier logic, will update video once this is done :D</p>
 <h2>Tasks TODO</h2>
 <p>These are not in any particular order. They are also subject to change and more features may be added.</p>
 <ul>
