@@ -11,7 +11,14 @@
 #define PLAYER_FIRE_RATE 16
 #define PLAYER_BULLET_SPEED 10
 
+#define NUM_BARRIERS 3
 
+#define NUM_BRICKS_PER_COL 7
+#define NUM_BRICKS_PER_ROW 14
+#define NUM_BRICK_COLOURS 4
+
+#define BRICK_WIDTH 8
+#define BRICK_HEIGHT 8
 
 #define NUM_ALIENS_PER_ROW 7
 #define NUM_ALIENS_PER_COL 5
@@ -26,6 +33,7 @@
 #define MAX_KEYBOARD_KEYS 350
 
 enum class SIDE {
+    NONE,
     PLAYER,
     ALIEN,
 };

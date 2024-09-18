@@ -3,12 +3,36 @@
 extern App app;
 extern World stage;
 
+// alien 
 int alienStartXPos[NUM_ALIENS_PER_ROW];
 int alienStartYPos[NUM_ALIENS_PER_COL];
 int alienJumpCooldown;
 int alienDirection;
 float leftMostAlienX;
 float rightMostAlienX;
+
+// barriers
+bool barrier[NUM_BRICKS_PER_COL][NUM_BRICKS_PER_ROW] {
+    {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0},
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1},
+    {1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1},
+    {1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1}
+};
+
+RGB brickColours[NUM_BRICK_COLOURS] = {
+    {178, 255, 102},
+    {153, 255, 51},
+    {128, 255, 0},
+    {102, 204, 0}
+};
+
+int barrierStartX[3] = {WIDTH_PADDING + 24, (SCREEN_WIDTH / 2) - ((NUM_BRICKS_PER_ROW * BRICK_WIDTH) / 2), SCREEN_WIDTH - WIDTH_PADDING - NUM_BRICKS_PER_ROW * BRICK_WIDTH - 24};
+int barrierStartY = 520;
+
+
 
 namespace StageTextures {
     static SDL_Texture *playerTexture;
@@ -160,6 +184,45 @@ namespace StageUtil {
             stage.alien03s[i]->health = 1;
             stage.alien03s[i]->side = SIDE::ALIEN;
             // stage.alien03s[i]->reload = PLAYER_FIRE_RATE; TODO LATER
+        }
+    }
+
+    static void initBarriers() {
+        for (int i = 0; i < NUM_BARRIERS; ++i) {
+            for (int row = 0; row < NUM_BRICKS_PER_COL; ++row) {
+                for (int col = 0; col < NUM_BRICKS_PER_ROW; ++col) {
+                    if (barrier[row][col]) {
+                        stage.barriers[i][row][col] = (Brick *)malloc(sizeof(Brick));
+                        memset(stage.barriers[i][row][col], 0, sizeof(Brick));
+
+                        stage.barriers[i][row][col]->x = barrierStartX[i] + col * BRICK_WIDTH;
+                        stage.barriers[i][row][col]->y = barrierStartY + row * BRICK_HEIGHT;
+                        stage.barriers[i][row][col]->w = BRICK_WIDTH;
+                        stage.barriers[i][row][col]->h = BRICK_HEIGHT;
+                        stage.barriers[i][row][col]->health = 1;
+                        stage.barriers[i][row][col]->colour = brickColours[rand() % NUM_BRICK_COLOURS];
+                        stage.barriers[i][row][col]->side = SIDE::NONE;
+                    } else {    
+                        stage.barriers[i][row][col] = NULL;
+                    }
+                }
+            }
+        }
+    }
+    
+    static void updateBarriers() {}
+
+    static void drawBarriers() {
+        for (int i = 0; i < NUM_BARRIERS; ++i) {
+            for (int row = 0; row < NUM_BRICKS_PER_COL; ++row) {
+                for (int col = 0; col < NUM_BRICKS_PER_ROW; ++col) {
+                    if (stage.barriers[i][row][col]) {
+                        SDL_SetRenderDrawColor(app.renderer, stage.barriers[i][row][col]->colour.r, stage.barriers[i][row][col]->colour.g, stage.barriers[i][row][col]->colour.b, 255);
+                        SDL_Rect rect = {.x = (int)stage.barriers[i][row][col]->x, .y = (int)stage.barriers[i][row][col]->y, .w = stage.barriers[i][row][col]->w, .h = stage.barriers[i][row][col]->h};
+                        SDL_RenderFillRect(app.renderer, &rect);
+                    }
+                }
+            }
         }
     }
 
@@ -371,17 +434,20 @@ namespace Stage {
         StageUtil::initPlayer();
         StageUtil::initBullets();
         StageUtil::initAliens();
+        StageUtil::initBarriers();
     }
 
     void updateStage() {
         StageUtil::updatePlayer();
         StageUtil::updateAliens();
         StageUtil::updateBullets();
+        StageUtil::updateBarriers();
     }
 
     void drawStage() {
         StageUtil::drawPlayer();
         StageUtil::drawAliens();
         StageUtil::drawBullets();
+        StageUtil::drawBarriers();
     }
 }
