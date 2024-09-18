@@ -48,6 +48,10 @@ make
 
 <p>A window should now open with the game.</p>
 
+<h1>User Controls</h1>
+<p>Use the left and right arrow keys to move the player.</p>
+<p>Use the left control to shoot bullets.
+</p>
 <h1>Current Game State</h1>
 
 
