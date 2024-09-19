@@ -62,13 +62,13 @@ https://github.com/user-attachments/assets/ddcb8eee-b338-430f-89bc-7a2b81062fce
   <li>Allowing player to shoot</li>
   <li>Rendering and moving aliens/invaders</li>
   <li>Allowing aliens/invaders to be destroyed by player's bullets</li>
+  <li>Render barriers and allow them to block bullets</li>
+  <li>Make barriers crack when colliding with bullets</li>
 </ul>
 <h2>Tasks TODO</h2>
 <p>These are not in any particular order. They are also subject to change and more features may be added.</p>
 <ul>
   <li>Allow aliens/invaders to shoot and destroy the player</li>
-  <li>Render barriers and allow them to block bullets</li>
-  <li>Make barriers crack when colliding with bullets</li>
   <li>Add HUD to track score and lives</li>
   <li>Reset game after player dies</li>
   <li>Reset aliens after they all die</li>
