@@ -52,7 +52,9 @@ make
 <p>Use the left and right arrow keys to move the player.</p>
 <p>Use the left control to shoot bullets.</p>
 <h1>Current Game State</h1>
+
 https://github.com/user-attachments/assets/ddcb8eee-b338-430f-89bc-7a2b81062fce
+
 <p>This video is sped up by x5.</p>
 <h2>Completed Tasks</h2>
 <ul>
