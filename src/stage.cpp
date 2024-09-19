@@ -43,6 +43,24 @@ namespace StageTextures {
 }
 
 namespace StageUtil {
+    static bool isBulletHittingBarrier(Entity *bullet) {
+        Rect bulletHitBox = {.x = bullet->x, .y = bullet->y, .w = bullet->w, .h = bullet->h};
+        for (int i = 0; i < NUM_BARRIERS; ++i) {
+            for (int row = NUM_BRICKS_PER_COL - 1; row >= 0; --row) {
+                for (int col = 0; col < NUM_BRICKS_PER_ROW; ++col) {
+                    if (stage.barriers[i][row][col]) {
+                        Rect brickHitBox = {.x = stage.barriers[i][row][col]->x, .y = stage.barriers[i][row][col]->y, .w = stage.barriers[i][row][col]->w, .h = stage.barriers[i][row][col]->h};
+                        if (bullet->side != stage.barriers[i][row][col]->side && Util::collision(&bulletHitBox, &brickHitBox)) {
+                            stage.barriers[i][row][col]->health = 0;
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
     static bool isBulletHittingAlien(Entity *bullet) {
         Rect bulletHitBox = {.x = bullet->x, .y = bullet->y, .w = bullet->w, .h = bullet->h};
         // alien01s
@@ -210,7 +228,20 @@ namespace StageUtil {
         }
     }
     
-    static void updateBarriers() {}
+    static void updateBarriers() {
+        for (int i = 0; i < NUM_BARRIERS; ++i) {
+            for (int row = 0; row < NUM_BRICKS_PER_COL; ++row) {
+                for (int col = 0; col < NUM_BRICKS_PER_ROW; ++col) {
+                    if (stage.barriers[i][row][col]) {
+                        if (stage.barriers[i][row][col]->health == 0) {
+                            free(stage.barriers[i][row][col]);
+                            stage.barriers[i][row][col] = NULL;
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     static void drawBarriers() {
         for (int i = 0; i < NUM_BARRIERS; ++i) {
@@ -259,7 +290,7 @@ namespace StageUtil {
             curr->y += curr->dy;
 
             // if bullet is outside of window or collides with something, free it
-            if (isBulletHittingAlien(curr) || isBulletHittingPlayer(curr) || curr->x > SCREEN_WIDTH || curr->y > SCREEN_HEIGHT || curr->x < -curr->w || curr->y < -curr->h) {
+            if (isBulletHittingBarrier(curr) || isBulletHittingAlien(curr) || isBulletHittingPlayer(curr) || curr->x > SCREEN_WIDTH || curr->y > SCREEN_HEIGHT || curr->x < -curr->w || curr->y < -curr->h) {
                 if (curr == stage.bulletTail) {stage.bulletTail = prev;}
 
                 prev->next = curr->next;
