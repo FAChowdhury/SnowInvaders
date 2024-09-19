@@ -52,27 +52,17 @@ namespace StageUtil {
                         Rect brickHitBox = {.x = stage.barriers[i][row][col]->x, .y = stage.barriers[i][row][col]->y, .w = stage.barriers[i][row][col]->w, .h = stage.barriers[i][row][col]->h};
                         if (bullet->side != stage.barriers[i][row][col]->side && Util::collision(&bulletHitBox, &brickHitBox)) {
                             if (bullet->side == SIDE::ALIEN) {
-                                if (row == 0) {
-                                    stage.barriers[i][row][col]->health = 0;
-                                    return true;
-                                } else {
-                                    for (int j = row-1; j >= 0; --j) {
-                                        if (stage.barriers[i][j][col] == NULL) {
-                                            stage.barriers[i][j+1][col]->health = 0;
-                                            return true;
-                                        }
+                                for (int j = 0; j < NUM_BRICKS_PER_COL; ++j) {
+                                    if (stage.barriers[i][j][col] != NULL) {
+                                        stage.barriers[i][j][col]->health = 0;
+                                        return true;
                                     }
                                 }
                             } else if (bullet->side == SIDE::PLAYER) {
-                                if (row == NUM_BRICKS_PER_COL - 1) {
-                                    stage.barriers[i][row][col]->health = 0;
-                                    return true;
-                                } else {
-                                    for (int j = row+1; j < NUM_BRICKS_PER_COL; ++j) {
-                                        if (stage.barriers[i][j][col] == NULL) {
-                                            stage.barriers[i][j-1][col]->health = 0;
-                                            return true;
-                                        }
+                                for (int j = NUM_BRICKS_PER_COL - 1; j >= 0; --j) {
+                                    if (stage.barriers[i][j][col] != NULL) {
+                                        stage.barriers[i][j][col]->health = 0;
+                                        return true;
                                     }
                                 }
                             }
