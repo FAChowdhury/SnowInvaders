@@ -1,5 +1,3 @@
-
-https://github.com/user-attachments/assets/58c13b48-dbed-483d-b3dd-3b251d5238d1
 # SnowInvaders*
 ![image](https://github.com/user-attachments/assets/626187ba-1c67-4d4b-a9ee-ca55f56fdb1c)
 
@@ -55,7 +53,7 @@ make
 <p>Use the left control to shoot bullets.</p>
 <h1>Current Game State</h1>
 
-Uploading Alien bullets are rendered.mp4
+https://github.com/user-attachments/assets/4441469f-0a82-4c93-b5d0-bfc2bd5d7781
 
 <h2>Completed Tasks</h2>
 <ul>
