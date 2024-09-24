@@ -5,6 +5,7 @@
 #include "draw.h"
 #include "defs.h"
 #include "util.h"
+#include <math.h>
 
 namespace Stage {
     void initStage();

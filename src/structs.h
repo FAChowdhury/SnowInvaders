@@ -20,6 +20,7 @@ typedef struct Entity {
     float dy;
     int health;
     int reload;
+    double angle;
     SIDE side;
 } Entity;
 

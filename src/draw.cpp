@@ -29,5 +29,12 @@ namespace Draw {
         SDL_Rect dest = {.x = x, .y = y};
         SDL_QueryTexture(texture, NULL, NULL, &dest.w, &dest.h);
         SDL_RenderCopy(app.renderer, texture, NULL, &dest);
+        // SDL_RenderCopyEx(app.renderer, texture, NULL, &dest, 45, NULL, SDL_FLIP_NONE);
+    }
+
+    void drawToWindowEx(SDL_Texture *texture, int x, int y, double angle) {
+        SDL_Rect dest = {.x = x, .y = y};
+        SDL_QueryTexture(texture, NULL, NULL, &dest.w, &dest.h);
+        SDL_RenderCopyEx(app.renderer, texture, NULL, &dest, angle, NULL, SDL_FLIP_NONE);
     }
 };

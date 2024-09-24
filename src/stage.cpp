@@ -37,12 +37,73 @@ int barrierStartY = 520;
 namespace StageTextures {
     static SDL_Texture *playerTexture;
     static SDL_Texture *playerBulletTexture;
+    static SDL_Texture *alien02BulletTexture;
+    static SDL_Texture *alien03BulletTexture;
     static SDL_Texture *alien01Texture;
     static SDL_Texture *alien02Texture;
     static SDL_Texture *alien03Texture;
 }
 
 namespace StageUtil {
+    static double calculateAngle(float fromX, float fromY, float toX, float toY) {
+        double angleRadians = atan(-(fromX - toX)/(fromY - toY));
+        double angleDegrees = angleRadians * (180 / M_PI);
+        return angleDegrees;
+    }
+
+    static float calculateSlopeX(float fromX, float fromY, float toX, float toY) {
+        return (fromX - toX)/(fromY - toY);
+    }
+
+    static void fireAlienBulletAtPlayer(Entity *e) {
+        // printf("FIRE!\n");
+        // create bullet
+        Entity *bullet = (Entity *)malloc(sizeof(Entity));
+        memset(bullet, 0, sizeof(Entity));
+        // assign bullet values
+        bullet->texture = StageTextures::alien03BulletTexture;
+        SDL_QueryTexture(bullet->texture, NULL, NULL, &bullet->w, &bullet->h);
+        bullet->x = e->x + (1.0f/2.0f) * (e->w - bullet->w);
+        bullet->y = e->y - bullet->y + 8;
+        bullet->dy = ALIEN_BULLET_SPEED;
+        bullet->dx = calculateSlopeX(e->x + (e->w / 2), e->y + (e->h / 2), stage.player->x + (stage.player->w / 2), stage.player->y + (stage.player->h / 2)) * ALIEN_BULLET_SPEED;
+        bullet->health = 1;
+        bullet->side = SIDE::ALIEN;
+        // compute bullet angle
+        bullet->angle = calculateAngle(e->x + (e->w / 2), e->y + (e->h / 2), stage.player->x + (stage.player->w / 2), stage.player->y + (stage.player->h / 2));
+        // reset reload cooldown
+
+        // add it to bullet linked list of stage
+        stage.bulletTail->next = bullet;
+        stage.bulletTail = bullet;
+
+
+        e->reload = (4 + (rand() % 6)) * FPS;
+    }
+
+    static void fireAlienBulletDown(Entity *e) {
+        // create bullet
+        Entity *bullet = (Entity *)malloc(sizeof(Entity));
+        memset(bullet, 0, sizeof(Entity));
+
+        // assign values to bullet entity
+        // bullet->texture = StageTextures::alien02BulletTexture;
+        bullet->texture = StageTextures::alien02BulletTexture;
+        SDL_QueryTexture(bullet->texture, NULL, NULL, &bullet->w, &bullet->h);
+        bullet->x = e->x + (1.0f/2.0f) * (e->w - bullet->w);
+        bullet->y = e->y - bullet->y + 8;
+        bullet->dy = ALIEN_BULLET_SPEED;
+        bullet->health = 1;
+        bullet->side = SIDE::ALIEN;
+
+        // add it to bullet linked list of stage
+        stage.bulletTail->next = bullet;
+        stage.bulletTail = bullet;
+
+        // reset reload cooldown
+        e->reload = (2 + (rand() % 6)) * FPS;
+    }
+
     static bool isBulletHittingBarrier(Entity *bullet) {
         Rect bulletHitBox = {.x = bullet->x, .y = bullet->y, .w = bullet->w, .h = bullet->h};
         for (int i = 0; i < NUM_BARRIERS; ++i) {
@@ -201,6 +262,9 @@ namespace StageUtil {
                 stage.alien02s[row][col]->health = 1;
                 stage.alien02s[row][col]->side = SIDE::ALIEN;
                 // stage.alien02s[row][col]->reload = PLAYER_FIRE_RATE; TODO LATER
+
+                // alien shooting
+                stage.alien02s[row][col]->reload = (1 + (rand() % 8)) * FPS;
             }
         }
         // alien03s
@@ -215,6 +279,9 @@ namespace StageUtil {
             stage.alien03s[i]->health = 1;
             stage.alien03s[i]->side = SIDE::ALIEN;
             // stage.alien03s[i]->reload = PLAYER_FIRE_RATE; TODO LATER
+
+            // alien shooting
+            stage.alien03s[i]->reload = (1 + (rand() % 8)) * FPS;
         }
     }
 
@@ -317,7 +384,8 @@ namespace StageUtil {
 
     static void drawBullets() {
         for (Entity *curr = stage.bulletHead.next; curr != NULL; curr = curr->next) {
-            Draw::drawToWindow(curr->texture, curr->x, curr->y);
+            // Draw::drawToWindow(curr->texture, curr->x, curr->y);
+            Draw::drawToWindowEx(curr->texture, curr->x, curr->y, curr->angle);
         }
     }
 
@@ -416,6 +484,9 @@ namespace StageUtil {
                                 stage.alien02s[row][col]->x += ALIEN_JUMP_DISTANCE_X * alienDirection;
                             }
                         }
+                        if (--stage.alien02s[row][col]->reload < 0) {
+                            fireAlienBulletDown(stage.alien02s[row][col]);
+                        }
                     }
                 }
             }
@@ -434,6 +505,9 @@ namespace StageUtil {
                         } else {
                             stage.alien03s[i]->x += ALIEN_JUMP_DISTANCE_X * alienDirection;
                         }
+                    }
+                    if (--stage.alien03s[i]->reload < 0) { 
+                        fireAlienBulletAtPlayer(stage.alien03s[i]);
                     }
                 }
             }
@@ -470,6 +544,8 @@ namespace Stage {
         // load all textures
         StageTextures::playerTexture = Draw::loadTexture("../gfx/Player.png");
         StageTextures::playerBulletTexture = Draw::loadTexture("../gfx/PlayerBullet.png");
+        StageTextures::alien02BulletTexture = Draw::loadTexture("../gfx/Alien02Bullet.png");
+        StageTextures::alien03BulletTexture = Draw::loadTexture("../gfx/Alien03Bullet.png");
         StageTextures::alien01Texture = Draw::loadTexture("../gfx/Alien01.png");
         StageTextures::alien02Texture = Draw::loadTexture("../gfx/Alien02.png");
         StageTextures::alien03Texture = Draw::loadTexture("../gfx/Alien03.png");

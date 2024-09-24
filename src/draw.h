@@ -9,4 +9,5 @@ namespace Draw {
     void presentScene();
     SDL_Texture *loadTexture(const char *filename);
     void drawToWindow(SDL_Texture *texture, int x, int y);
+    void drawToWindowEx(SDL_Texture *texture, int x, int y, double angle);
 };
