@@ -53,7 +53,7 @@ make
 <p>Use the left control to shoot bullets.</p>
 <h1>Current Game State</h1>
 
-https://github.com/user-attachments/assets/020f704b-0eb4-48f9-a653-fc2ddd082f9f
+https://github.com/user-attachments/assets/298f4036-b258-4c15-b7a3-c2561dac394a
 
 <p>This video is sped up by x5.</p>
 <h2>Completed Tasks</h2>
