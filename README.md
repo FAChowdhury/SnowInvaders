@@ -53,7 +53,7 @@ make
 <p>Use the left control to shoot bullets.</p>
 <h1>Current Game State</h1>
 
-https://github.com/user-attachments/assets/ddcb8eee-b338-430f-89bc-7a2b81062fce
+https://github.com/user-attachments/assets/020f704b-0eb4-48f9-a653-fc2ddd082f9f
 
 <p>This video is sped up by x5.</p>
 <h2>Completed Tasks</h2>
@@ -64,11 +64,12 @@ https://github.com/user-attachments/assets/ddcb8eee-b338-430f-89bc-7a2b81062fce
   <li>Allowing aliens/invaders to be destroyed by player's bullets</li>
   <li>Render barriers and allow them to block bullets</li>
   <li>Make barriers crack when colliding with bullets</li>
+  <li>Aliens can shoot and bullets are rendered</li>
 </ul>
 <h2>Tasks TODO</h2>
 <p>These are not in any particular order. They are also subject to change and more features may be added.</p>
 <ul>
-  <li>Allow aliens/invaders to shoot and destroy the player</li>
+  <li>Allow alien bullets to destroy player</li>
   <li>Add HUD to track score and lives</li>
   <li>Reset game after player dies</li>
   <li>Reset aliens after they all die</li>
