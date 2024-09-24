@@ -1,3 +1,5 @@
+
+https://github.com/user-attachments/assets/58c13b48-dbed-483d-b3dd-3b251d5238d1
 # SnowInvaders*
 ![image](https://github.com/user-attachments/assets/626187ba-1c67-4d4b-a9ee-ca55f56fdb1c)
 
@@ -53,9 +55,8 @@ make
 <p>Use the left control to shoot bullets.</p>
 <h1>Current Game State</h1>
 
-https://github.com/user-attachments/assets/298f4036-b258-4c15-b7a3-c2561dac394a
+Uploading Alien bullets are rendered.mp4
 
-<p>This video is sped up by x5.</p>
 <h2>Completed Tasks</h2>
 <ul>
   <li>Rendering and moving player</li>
