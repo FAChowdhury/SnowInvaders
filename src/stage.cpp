@@ -10,6 +10,7 @@ int alienJumpCooldown;
 int alienDirection;
 float leftMostAlienX;
 float rightMostAlienX;
+int pauseBeforeRespawnAliens = FPS * 2;
 
 // barriers
 bool barrier[NUM_BRICKS_PER_COL][NUM_BRICKS_PER_ROW] {
@@ -56,7 +57,6 @@ namespace StageUtil {
     }
 
     static void fireAlienBulletAtPlayer(Entity *e) {
-        // printf("FIRE!\n");
         // create bullet
         Entity *bullet = (Entity *)malloc(sizeof(Entity));
         memset(bullet, 0, sizeof(Entity));
@@ -87,7 +87,6 @@ namespace StageUtil {
         memset(bullet, 0, sizeof(Entity));
 
         // assign values to bullet entity
-        // bullet->texture = StageTextures::alien02BulletTexture;
         bullet->texture = StageTextures::alien02BulletTexture;
         SDL_QueryTexture(bullet->texture, NULL, NULL, &bullet->w, &bullet->h);
         bullet->x = e->x + (1.0f/2.0f) * (e->w - bullet->w);
@@ -448,6 +447,7 @@ namespace StageUtil {
         // if left-most goes out of bounds after move, jump y direction, set direction to opposite
         // if right-most goes out of bounds after move, jump y direction, set direction to opposite
         bool reverseAlienDirection = false;
+        bool allAliensAreDead = true;
         // alien01s
         for (int row = 0; row < 2; ++row) {
             for (int col = 0; col < NUM_ALIENS_PER_ROW; ++col) {
@@ -456,6 +456,7 @@ namespace StageUtil {
                         free(stage.alien01s[row][col]);
                         stage.alien01s[row][col] = NULL;
                     } else { // does not die
+                        allAliensAreDead = false;
                         if (alienJumpCooldown == 0) {
                             if (leftMostAlienX + ALIEN_JUMP_DISTANCE_X * alienDirection < WIDTH_PADDING || rightMostAlienX + ALIEN_JUMP_DISTANCE_X * alienDirection > SCREEN_WIDTH - WIDTH_PADDING) {
                                 stage.alien01s[row][col]->y += ALIEN_JUMP_DISTANCE_Y;
@@ -476,6 +477,7 @@ namespace StageUtil {
                         free(stage.alien02s[row][col]);
                         stage.alien02s[row][col] = NULL;
                     } else {
+                        allAliensAreDead = false;
                         if (alienJumpCooldown == 0) {
                             if (leftMostAlienX + ALIEN_JUMP_DISTANCE_X * alienDirection < WIDTH_PADDING || rightMostAlienX + ALIEN_JUMP_DISTANCE_X * alienDirection > SCREEN_WIDTH - WIDTH_PADDING) {
                                 stage.alien02s[row][col]->y += ALIEN_JUMP_DISTANCE_Y;
@@ -498,6 +500,7 @@ namespace StageUtil {
                     free(stage.alien03s[i]);
                     stage.alien03s[i] = NULL;
                 } else {
+                    allAliensAreDead = false;
                     if (alienJumpCooldown == 0) {
                         if (leftMostAlienX + ALIEN_JUMP_DISTANCE_X * alienDirection < WIDTH_PADDING || rightMostAlienX + ALIEN_JUMP_DISTANCE_X * alienDirection > SCREEN_WIDTH - WIDTH_PADDING) {
                             stage.alien03s[i]->y += ALIEN_JUMP_DISTANCE_Y;
@@ -514,6 +517,12 @@ namespace StageUtil {
         }
         if (reverseAlienDirection) {alienDirection *= -1;}
         if (alienJumpCooldown == 0) {alienJumpCooldown = ALIEN_JUMP_COOLDOWN;}
+
+        // reset aliens if all aliens are dead
+        if (allAliensAreDead && (--pauseBeforeRespawnAliens < 0)) {
+            initAliens();
+            pauseBeforeRespawnAliens = FPS * 2;
+        }
     }
 
     static void drawAliens() {
